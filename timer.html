@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>點數管理器</title>
+  <style>
+    body {
+      font-family: "Arial", sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    #points {
+      font-size: 48px;
+      margin: 20px;
+    }
+    button {
+      font-size: 24px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>點數管理器</h1>
+  <div id="points">點數：0</div>
+  <button onclick="decreasePoint()">減少 1 點</button>
+
+  <script>
+    let points = 0;
+    const pointDisplay = document.getElementById('points');
+
+    // 每10秒自動加1點
+    setInterval(() => {
+      points++;
+      updateDisplay();
+    }, 10000); // 10秒
+
+    function decreasePoint() {
+      points--;
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      pointDisplay.textContent = `點數：${points}`;
+    }
+  </script>
+
+</body>
+</html>

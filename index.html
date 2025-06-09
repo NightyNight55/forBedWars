@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>點數管理器</title>
+  <title>鐵礦管理器</title>
   <style>
     body {
       font-family: "Arial", sans-serif;
@@ -21,9 +21,11 @@
 </head>
 <body>
 
-  <h1>點數管理器</h1>
-  <div id="points">點數：0</div>
-  <button onclick="decreasePoint()">減少 1 點</button>
+  <h1>鐵礦管理器</h1>
+  <div id="points">鐵礦：0</div>
+  <button onclick="decrease1Point()">減少 1 個</button>
+  <button onclick="decrease5Point()">減少 5 個</button>
+  <button onclick="decrease10Point()">減少 10 個</button>
 
   <script>
     let points = 0;
@@ -35,8 +37,18 @@
       updateDisplay();
     }, 10000); // 10秒
 
-    function decreasePoint() {
+    function decrease1Point() {
       points--;
+      updateDisplay();
+    }
+
+    function decrease5Point() {
+      points = point - 5;
+      updateDisplay();
+    }
+
+    function decrease10Point() {
+      points = point - 10;
       updateDisplay();
     }
 

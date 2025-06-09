@@ -5,17 +5,52 @@
   <title>鐵礦管理器</title>
   <style>
     body {
-      font-family: "Arial", sans-serif;
-      text-align: center;
-      margin-top: 100px;
+      font-family: "Segoe UI", "Arial", sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #80deea);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
     }
+
+    h1 {
+      font-size: 3em;
+      color: #006064;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px #bbb;
+    }
+
     #points {
       font-size: 48px;
-      margin: 20px;
+      background-color: #ffffffcc;
+      border-radius: 12px;
+      padding: 20px 40px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      color: #004d40;
+      margin-bottom: 30px;
     }
+
     button {
-      font-size: 24px;
-      padding: 10px 20px;
+      font-size: 20px;
+      padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #0097a7;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #006064;
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.95);
     }
   </style>
 </head>
@@ -23,32 +58,36 @@
 
   <h1>鐵礦管理器</h1>
   <div id="points">鐵礦：0</div>
-  <button onclick="decrease1Point()">減少 1 個</button>
-  <button onclick="decrease5Point()">減少 5 個</button>
-  <button onclick="decrease10Point()">減少 10 個</button>
+  <div>
+    <button onclick="decrease1Point()">減少 1 個</button>
+    <button onclick="decrease5Point()">減少 5 個</button>
+    <button onclick="decrease10Point()">減少 10 個</button>
+  </div>
 
   <script>
     let points = 0;
     const pointDisplay = document.getElementById('points');
 
-    // 每10秒自動加1點
     setInterval(() => {
       points++;
       updateDisplay();
-    }, 10000); // 10秒
+    }, 10000); // 每10秒加1點
 
     function decrease1Point() {
-      points--;
+      //points = Math.max(points - 1, 0);
+      points --;
       updateDisplay();
     }
 
     function decrease5Point() {
-      points = points - 5;
+      //points = Math.max(points - 5, 0);
+      points = points -5;
       updateDisplay();
     }
 
     function decrease10Point() {
-      points = points - 10;
+      //points = Math.max(points - 10, 0);
+      points = points -10;
       updateDisplay();
     }
 

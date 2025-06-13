@@ -65,35 +65,61 @@
   </div>
 
   <script>
-    let points = 0;
+    let points = parseInt(localStorage.getItem('ironPoints')) || 0;
+    let lastUpdate = parseInt(localStorage.getItem('lastUpdate')) || Date.now();
     const pointDisplay = document.getElementById('points');
-
-    setInterval(() => {
-      points++;
-      updateDisplay();
-    }, 10000); // 每10秒加1點
-
-    function decrease1Point() {
-      //points = Math.max(points - 1, 0);
-      points --;
-      updateDisplay();
-    }
-
-    function decrease5Point() {
-      //points = Math.max(points - 5, 0);
-      points = points -5;
-      updateDisplay();
-    }
-
-    function decrease10Point() {
-      //points = Math.max(points - 10, 0);
-      points = points -10;
-      updateDisplay();
-    }
 
     function updateDisplay() {
       pointDisplay.textContent = `鐵礦：${points}`;
+      localStorage.setItem('ironPoints', points);
+      localStorage.setItem('lastUpdate', lastUpdate);
     }
+
+    function showInsufficientAlert() {
+      alert("鐵礦不足！");
+    }
+
+    function decrease1Point() {
+      if (points >= 1) {
+        points -= 1;
+        updateDisplay();
+      } else {
+        showInsufficientAlert();
+      }
+    }
+
+    function decrease5Point() {
+      if (points >= 5) {
+        points -= 5;
+        updateDisplay();
+      } else {
+        showInsufficientAlert();
+      }
+    }
+
+    function decrease10Point() {
+      if (points >= 10) {
+        points -= 10;
+        updateDisplay();
+      } else {
+        showInsufficientAlert();
+      }
+    }
+
+    // 每秒檢查一次是否該自動加鐵礦
+    setInterval(() => {
+      const now = Date.now();
+      const elapsedSeconds = Math.floor((now - lastUpdate) / 1000);
+
+      if (elapsedSeconds >= 10) {
+        const gained = Math.floor(elapsedSeconds / 10);
+        points += gained;
+        lastUpdate += gained * 10000;
+        updateDisplay();
+      }
+    }, 1000);
+
+    updateDisplay();
   </script>
 
 </body>

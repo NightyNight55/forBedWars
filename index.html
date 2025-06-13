@@ -53,6 +53,27 @@
       transform: scale(0.95);
     }
 
+    #button1 {
+      font-size: 20px;
+      padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff5252;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #button1:hover {
+      background-color: #640f00;
+      transform: scale(1.05);
+    }
+
+    #button1:active {
+      transform: scale(0.95);
+    }
+
     /* 美觀提示框樣式 */
     #toast {
       visibility: hidden;
@@ -88,6 +109,11 @@
     <button onclick="decrease1Point()">減少 1 個</button>
     <button onclick="decrease5Point()">減少 5 個</button>
     <button onclick="decrease10Point()">減少 10 個</button>
+  </div>
+  <div>
+    <button id="button1" onclick="increase1Point()">增加 1 個</button>
+    <button id="button1" onclick="increase5Point()">增加 5 個</button>
+    <button id="button1" onclick="increase10Point()">增加 10 個</button>
   </div>
 
   <!-- 提示框容器 -->
@@ -138,6 +164,18 @@
       } else {
         showToast("鐵礦不足！");
       }
+    }
+
+    function increase1Point() {
+      points ++;
+    }
+
+    function increase5Point() {
+      points = points + 5;
+    }
+
+    function increase10Point() {
+      points = points + 10;
     }
 
     // 自動累加機制

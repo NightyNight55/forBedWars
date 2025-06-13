@@ -52,6 +52,32 @@
     button:active {
       transform: scale(0.95);
     }
+
+    /* 美觀提示框樣式 */
+    #toast {
+      visibility: hidden;
+      min-width: 200px;
+      background-color: #ff5252;
+      color: white;
+      text-align: center;
+      border-radius: 8px;
+      padding: 16px 24px;
+      position: fixed;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.5s ease, bottom 0.5s ease;
+      font-size: 18px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 80px;
+    }
   </style>
 </head>
 <body>
@@ -64,10 +90,14 @@
     <button onclick="decrease10Point()">減少 10 個</button>
   </div>
 
+  <!-- 提示框容器 -->
+  <div id="toast">鐵礦不足！</div>
+
   <script>
     let points = parseInt(localStorage.getItem('ironPoints')) || 0;
     let lastUpdate = parseInt(localStorage.getItem('lastUpdate')) || Date.now();
     const pointDisplay = document.getElementById('points');
+    const toast = document.getElementById('toast');
 
     function updateDisplay() {
       pointDisplay.textContent = `鐵礦：${points}`;
@@ -75,8 +105,12 @@
       localStorage.setItem('lastUpdate', lastUpdate);
     }
 
-    function showInsufficientAlert() {
-      alert("鐵礦不足！");
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500); // 顯示 2.5 秒
     }
 
     function decrease1Point() {
@@ -84,7 +118,7 @@
         points -= 1;
         updateDisplay();
       } else {
-        showInsufficientAlert();
+        showToast("鐵礦不足！");
       }
     }
 
@@ -93,7 +127,7 @@
         points -= 5;
         updateDisplay();
       } else {
-        showInsufficientAlert();
+        showToast("鐵礦不足！");
       }
     }
 
@@ -102,15 +136,14 @@
         points -= 10;
         updateDisplay();
       } else {
-        showInsufficientAlert();
+        showToast("鐵礦不足！");
       }
     }
 
-    // 每秒檢查一次是否該自動加鐵礦
+    // 自動累加機制
     setInterval(() => {
       const now = Date.now();
       const elapsedSeconds = Math.floor((now - lastUpdate) / 1000);
-
       if (elapsedSeconds >= 10) {
         const gained = Math.floor(elapsedSeconds / 10);
         points += gained;

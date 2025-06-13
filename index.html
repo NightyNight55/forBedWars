@@ -13,6 +13,7 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
+      overflow-x: hidden;
     }
 
     h1 {
@@ -54,24 +55,11 @@
     }
 
     #button1 {
-      font-size: 20px;
-      padding: 12px 24px;
-      margin: 10px;
-      border: none;
-      border-radius: 8px;
       background-color: #ff5252;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
     }
 
     #button1:hover {
       background-color: #640f00;
-      transform: scale(1.05);
-    }
-
-    #button1:active {
-      transform: scale(0.95);
     }
 
     /* 美觀提示框樣式 */
@@ -99,6 +87,64 @@
       opacity: 1;
       bottom: 80px;
     }
+
+    /* 鐵礦圖片容器與動畫 */
+    #iron-container {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #ironContainer {
+  position: absolute;
+  top: 100px; /* 避開標題和按鈕 */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* 不影響滑鼠事件 */
+  z-index: 0; /* 在最底層 */
+  overflow: visible;
+}
+
+    .iron {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    animation: drop 0.6s ease-out;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+  @keyframes drop {
+    0% {
+      transform: translateY(-100vh) scale(0.5);
+      opacity: 0;
+    }
+    60% {
+      transform: translateY(-20px) scale(1.1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+
+
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -116,14 +162,16 @@
     <button id="button1" onclick="increase10Point()">增加 10 個</button>
   </div>
 
-  <!-- 提示框容器 -->
+  <div id="iron-container"></div>
   <div id="toast">鐵礦不足！</div>
+  <div id="ironContainer"></div>
 
   <script>
     let points = parseInt(localStorage.getItem('ironPoints')) || 0;
     let lastUpdate = parseInt(localStorage.getItem('lastUpdate')) || Date.now();
     const pointDisplay = document.getElementById('points');
     const toast = document.getElementById('toast');
+    const ironContainer = document.getElementById('iron-container');
 
     function updateDisplay() {
       pointDisplay.textContent = `鐵礦：${points}`;
@@ -136,12 +184,66 @@
       toast.classList.add('show');
       setTimeout(() => {
         toast.classList.remove('show');
-      }, 2500); // 顯示 2.5 秒
+      }, 2500);
     }
+
+    let ironStackMap = {}; // 記錄 x 位置上已有幾層
+
+function addIronVisual(times = 1) {
+  for (let i = 0; i < times; i++) {
+    const img = document.createElement('img');
+    img.src = "iron.png";
+    img.classList.add('iron');
+
+    const ironWidth = 50;
+    const ironHeight = 50;
+    const screenWidth = window.innerWidth;
+
+    // 隨機生成 x 座標（以 50 為單位對齊）
+    const columnCount = Math.floor(screenWidth / ironWidth);
+    const column = Math.floor(Math.random() * columnCount);
+    const x = column * ironWidth;
+
+    // 計算此 column 的目前堆疊高度
+    const stackHeight = ironStackMap[column] || 0;
+    const y = window.innerHeight - ironHeight * (stackHeight + 1);
+
+    img.style.left = `${x}px`;
+    img.style.top = `${y}px`;
+
+    // 記錄 stack
+    ironStackMap[column] = stackHeight + 1;
+
+    document.getElementById('ironContainer').appendChild(img);
+  }
+}
+
+function removeIronVisual(times = 1) {
+  for (let i = 0; i < times; i++) {
+    const imgs = document.querySelectorAll('.iron');
+    if (imgs.length > 0) {
+      const target = imgs[Math.floor(Math.random() * imgs.length)];
+      const x = parseInt(target.style.left);
+      const column = Math.floor(x / 50);
+
+      // 從 body 移除
+      target.remove();
+
+      // 更新堆疊資料
+      if (ironStackMap[column]) {
+        ironStackMap[column]--;
+        if (ironStackMap[column] <= 0) delete ironStackMap[column];
+      }
+    }
+  }
+}
+
+
 
     function decrease1Point() {
       if (points >= 1) {
         points -= 1;
+        removeIronVisual(1);
         updateDisplay();
       } else {
         showToast("鐵礦不足！");
@@ -151,6 +253,7 @@
     function decrease5Point() {
       if (points >= 5) {
         points -= 5;
+        removeIronVisual(5);
         updateDisplay();
       } else {
         showToast("鐵礦不足！");
@@ -160,6 +263,7 @@
     function decrease10Point() {
       if (points >= 10) {
         points -= 10;
+        removeIronVisual(10);
         updateDisplay();
       } else {
         showToast("鐵礦不足！");
@@ -167,17 +271,20 @@
     }
 
     function increase1Point() {
-      points ++;
+      points++;
+      addIronVisual(1);
       updateDisplay();
     }
 
     function increase5Point() {
-      points = points + 5;
+      points += 5;
+      addIronVisual(5);
       updateDisplay();
     }
 
     function increase10Point() {
-      points = points + 10;
+      points += 10;
+      addIronVisual(10);
       updateDisplay();
     }
 
@@ -188,12 +295,19 @@
       if (elapsedSeconds >= 10) {
         const gained = Math.floor(elapsedSeconds / 10);
         points += gained;
+        addIronVisual(gained);
         lastUpdate += gained * 10000;
         updateDisplay();
       }
     }, 1000);
 
-    updateDisplay();
+    // 初始載入鐵礦圖片
+    window.onload = () => {
+      for (let i = 0; i < points; i++) {
+        addIronVisual();
+      }
+      updateDisplay();
+    };
   </script>
 
 </body>

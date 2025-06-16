@@ -88,6 +88,28 @@
       bottom: 80px;
     }
 
+    #resetButton {
+  font-size: 18px;
+  padding: 10px 20px;
+  margin: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ffab00;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#resetButton:hover {
+  background-color: #ff6f00;
+  transform: scale(1.05);
+}
+
+#resetButton:active {
+  transform: scale(0.95);
+}
+
+
     /* 鐵礦圖片容器與動畫 */
     #iron-container {
       position: relative;
@@ -163,7 +185,7 @@
   </div>
   <div></div>
   <div>
-    <button id="button1" onclick="resetPoint()">歸零</button>
+    <button id="resrtButton" onclick="resetIron()">歸零</button>
   </div>
 
   <div id="iron-container"></div>
@@ -242,11 +264,22 @@ function removeIronVisual(times = 1) {
   }
 }
 
-function resetPoint(){
-  removeIronVisual(points);
+function resetIron() {
   points = 0;
   updateDisplay();
+
+  // 移除畫面上所有鐵礦圖片
+  const allIron = document.querySelectorAll('.iron');
+  allIron.forEach(el => el.remove());
+
+  // 清空堆疊資料
+  ironStackMap = {};
+
+  // 清除 localStorage（如果你希望也一起清除儲存）
+  localStorage.removeItem('ironPoints');
+  localStorage.removeItem('lastUpdate');
 }
+
 
 
 

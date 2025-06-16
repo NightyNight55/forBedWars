@@ -161,6 +161,10 @@
     <button id="button1" onclick="increase5Point()">增加 5 個</button>
     <button id="button1" onclick="increase10Point()">增加 10 個</button>
   </div>
+  <div></div>
+  <div>
+    <button id="button1" onclick="resetPoint()">歸零</button>
+  </div>
 
   <div id="iron-container"></div>
   <div id="toast">鐵礦不足！</div>
@@ -236,6 +240,12 @@ function removeIronVisual(times = 1) {
       }
     }
   }
+}
+
+function resetPoint(){
+  removeIronVisual(points);
+  points = 0;
+  updateDisplay();
 }
 
 
